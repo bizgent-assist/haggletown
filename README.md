@@ -8,6 +8,10 @@ Built for the **NEAR Hackathon 2026**, track **Games With Real Economies**. Test
 
 > Status: work in progress. See [docs/SPEC.md](docs/SPEC.md) for the build plan.
 
+**Live on testnet:** contract [`market.haggletown-2026.testnet`](https://testnet.nearblocks.io/address/market.haggletown-2026.testnet)
+with four AI merchants. See [docs/TESTNET.md](docs/TESTNET.md) for accounts, verified transactions and how to
+redeploy with your own account, and [docs/CONTRACT.md](docs/CONTRACT.md) for the contract interface.
+
 ## Stack
 | Part | Tech |
 |---|---|
