@@ -22,6 +22,17 @@ and 1 NEAR per day. Items and price bands are defined in [server/src/config/worl
 - Merchant key calling `mt_transfer`: rejected by the protocol (function-call keys cannot attach a deposit).
 - Merchant buying above its per-trade limit: rejected by the contract.
 
+### Market tick (merchants trading with each other)
+Each merchant has `wants` in [world.js](../server/src/config/world.js): amounts it tries to hold. On each tick, one
+merchant that is short buys from another with spare stock at about 90% of the seller's shop price. The seller posts the
+offer and the buyer accepts it, each with its own restricted key, so every deal is two real transactions checked by the
+contract. First live run (2026-11-13, `npm run market:tick -- --count 3`):
+- Grob bought 2 fish from Tess @ 0.00828 NEAR ([accept tx](https://testnet.nearblocks.io/txns/J43Qc4qFSJQaj3ZHNk27eogGeyNvx1rpjMeoZV9kiPEz))
+- Grob bought 2 potions from Mira @ 0.036765 NEAR ([accept tx](https://testnet.nearblocks.io/txns/7MfcxPnAyDXC8nWsP42gYw3UA2PntDHuujLcGH68d3Mx))
+- Mira bought 2 fish from Tess @ 0.008487 NEAR ([accept tx](https://testnet.nearblocks.io/txns/8QieWKrzypC7JbLMPoyiHJazmSbWqAjpMrsVpToMLSee)) — up from 0.00828 as Tess's stock fell
+
+Enable it in the API with `MARKET_TICK_ENABLED=true` and `MARKET_TICK_SECONDS` (minimum 30, default 300).
+
 ## Reproduce with your own account
 Requirements: Node 20+, `gh` (to fetch the wasm), and NEAR CLI for a faucet account.
 

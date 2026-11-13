@@ -56,6 +56,13 @@ export async function makeOffer(slug, { counterparty, itemId, quantity, unitPric
   return { offerId: value, txHash };
 }
 
+/** An NPC accepts an offer addressed to it, paying from its contract balance. */
+export const acceptOfferAsNpc = (slug, offerId) => npcCall(slug, 'accept_offer', { offer_id: offerId });
+
+export const cancelOfferAsNpc = (slug, offerId) => npcCall(slug, 'cancel_offer', { offer_id: offerId });
+
+export const pruneExpiredAsNpc = (slug, limit = 25) => npcCall(slug, 'prune_expired', { limit });
+
 /**
  * Verifies that `txHash` is a successful accept_offer by `accountId` on the market,
  * and returns the trade from its `haggletown` trade event.

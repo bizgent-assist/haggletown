@@ -16,8 +16,8 @@ in chat, and trade with each other inside spending limits the contract enforces.
    offer to the NPC's floor price and limits before anything is signed.
 4. **Accept offer**: the player signs `player_buy` / `player_sell` from their wallet (near-connect).
    The server reads the transaction outcome before marking the trade `verified`.
-5. **Market tick** (every `MARKET_TICK_SECONDS`): NPCs restock, trade with each other and update
-   prices from supply and cash. This keeps the economy moving with no players present.
+5. **Market tick** (every `MARKET_TICK_SECONDS`): merchants short of something they want buy it from
+   each other on-chain; prices follow stock. Done. (Restocking by "production" is not built.)
 6. **Ledger page**: all verified trades with explorer links; price chart per item.
 7. **Email (Brevo)**: optional notice when a merchant sends a counter-offer or a price alert fires.
 

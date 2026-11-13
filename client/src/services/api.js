@@ -12,5 +12,5 @@ export const getConversation = (slug, accountId) =>
 export const haggle = (slug, accountId, message) =>
   api.post(`/npcs/${slug}/haggle`, { accountId, message }).then((r) => r.data);
 export const confirmTrade = (accountId, txHash) => api.post('/trades/confirm', { accountId, txHash }).then((r) => r.data.trade);
-export const getTrades = () => api.get('/trades').then((r) => r.data.trades);
+export const getTrades = (limit = 50) => api.get('/trades', { params: { limit } }).then((r) => r.data.trades);
 export const getInventory = (accountId) => api.get(`/players/${accountId}/inventory`).then((r) => r.data.inventory);

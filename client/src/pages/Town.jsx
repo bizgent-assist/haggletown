@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { errorMessage, getNpcs } from '../services/api.js';
 import { formatNear, itemEmoji } from '../utils/format.js';
+import MarketFeed from '../components/MarketFeed.jsx';
 
 export default function Town() {
   const [npcs, setNpcs] = useState(null);
@@ -39,6 +40,7 @@ export default function Town() {
           </Link>
         ))}
       </div>
+      <MarketFeed npcs={npcs} />
     </section>
   );
 }

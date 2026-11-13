@@ -34,5 +34,6 @@ export const env = {
     operatorAccountId: process.env.OPERATOR_ACCOUNT_ID || '',
     npcKeys: JSON.parse(process.env.NPC_KEYS || '{}'),
   },
-  marketTickSeconds: Number(process.env.MARKET_TICK_SECONDS || 60),
+  marketTickEnabled: process.env.MARKET_TICK_ENABLED === 'true',
+  marketTickSeconds: Math.max(30, Number(process.env.MARKET_TICK_SECONDS || 300)),
 };

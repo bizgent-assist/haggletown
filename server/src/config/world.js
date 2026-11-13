@@ -13,6 +13,7 @@ export const ITEMS = [
 
 const DEFAULT_LIMITS = { maxPerTrade: '0.2', maxPerDay: '1' };
 
+// stock: starting stock. wants: amounts a merchant tries to hold by buying from other merchants (market tick).
 export const NPCS = [
   {
     slug: 'mira',
@@ -20,6 +21,7 @@ export const NPCS = [
     trade: 'Herbalist',
     blurb: 'Sells potions dear, buys herbs cheap.',
     stock: { potion: 20, herb: 40 },
+    wants: { herb: 45, fish: 2 }, // how many it likes to keep; buys from other merchants below this
     personality:
       'Mira, a warm but shrewd herbalist. Sells potions dear and buys herbs cheap. Gives small discounts to polite customers.',
   },
@@ -29,6 +31,7 @@ export const NPCS = [
     trade: 'Blacksmith',
     blurb: 'Gruff, but softens if you bring ore.',
     stock: { sword: 6, iron_ore: 20 },
+    wants: { potion: 2, fish: 2 }, // how many it likes to keep; buys from other merchants below this
     personality:
       'Grob, a gruff blacksmith of few words. Hates haggling over swords but softens if the customer brings iron ore.',
   },
@@ -38,6 +41,7 @@ export const NPCS = [
     trade: 'Fishmonger',
     blurb: 'Prices swing with the morning catch.',
     stock: { fish: 40, herb: 10 },
+    wants: { iron_ore: 2, potion: 1 }, // how many it likes to keep; buys from other merchants below this
     personality:
       'Tess, a chatty fishmonger. Her prices swing with the morning catch; she sells fast before fish spoils.',
   },
@@ -47,6 +51,7 @@ export const NPCS = [
     trade: 'Collector',
     blurb: 'Pays well for rare items. Hates bluffing.',
     stock: { amulet: 3 },
+    wants: { sword: 1, potion: 1 }, // how many it likes to keep; buys from other merchants below this
     personality:
       'Oren, a quiet collector of rare things. Pays well for rare items, but walks away from anyone who bluffs.',
   },

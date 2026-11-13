@@ -12,7 +12,8 @@
     "near:deploy": "node scripts/near/deploy.js",
     "near:setup": "node scripts/near/setup-world.js",
     "near:status": "node scripts/near/status.js",
-    "near:smoke": "node scripts/near/smoke-trade.js"
+    "near:smoke": "node scripts/near/smoke-trade.js",
+    "market:tick": "node scripts/market-tick.js"
   },
   "dependencies": {
     "cookie-parser": "1.4.7",
