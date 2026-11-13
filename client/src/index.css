@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-dusk: #1b1530;
+  --color-lantern: #f4b942;
+  --color-parchment: #f6eedc;
+}
+
+body {
+  @apply bg-dusk text-parchment antialiased;
+}
