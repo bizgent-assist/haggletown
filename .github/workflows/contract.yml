@@ -1,0 +1,45 @@
+# Tests and builds the market contract on Linux. The development Windows machine blocks
+# locally compiled Rust build scripts (Smart App Control), so tests and the wasm build run here.
+# Download the wasm with:  gh run download --name haggletown-market-wasm -D contracts/market/target/near
+name: contract
+
+on:
+  push:
+    paths: ['contracts/**', '.github/workflows/contract.yml']
+  pull_request:
+    paths: ['contracts/**']
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts/market
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            contracts/market/target
+          key: market-${{ runner.os }}-${{ hashFiles('contracts/market/Cargo.lock', 'contracts/market/Cargo.toml') }}
+      - name: Unit tests
+        run: cargo test --locked
+      - name: Install cargo-near
+        run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/cargo-near/releases/latest/download/cargo-near-installer.sh | sh
+      - name: Build wasm
+        run: cargo near build non-reproducible-wasm
+      - name: Show artifact
+        run: ls -la target/near && sha256sum target/near/*.wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: haggletown-market-wasm
+          path: |
+            contracts/market/target/near/haggletown_market.wasm
+            contracts/market/target/near/haggletown_market_abi.json
+          if-no-files-found: error
