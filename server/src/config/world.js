@@ -18,6 +18,7 @@ export const NPCS = [
     slug: 'mira',
     name: 'Mira',
     trade: 'Herbalist',
+    blurb: 'Sells potions dear, buys herbs cheap.',
     stock: { potion: 20, herb: 40 },
     personality:
       'Mira, a warm but shrewd herbalist. Sells potions dear and buys herbs cheap. Gives small discounts to polite customers.',
@@ -26,6 +27,7 @@ export const NPCS = [
     slug: 'grob',
     name: 'Grob',
     trade: 'Blacksmith',
+    blurb: 'Gruff, but softens if you bring ore.',
     stock: { sword: 6, iron_ore: 20 },
     personality:
       'Grob, a gruff blacksmith of few words. Hates haggling over swords but softens if the customer brings iron ore.',
@@ -34,6 +36,7 @@ export const NPCS = [
     slug: 'tess',
     name: 'Tess',
     trade: 'Fishmonger',
+    blurb: 'Prices swing with the morning catch.',
     stock: { fish: 40, herb: 10 },
     personality:
       'Tess, a chatty fishmonger. Her prices swing with the morning catch; she sells fast before fish spoils.',
@@ -42,6 +45,7 @@ export const NPCS = [
     slug: 'oren',
     name: 'Oren',
     trade: 'Collector',
+    blurb: 'Pays well for rare items. Hates bluffing.',
     stock: { amulet: 3 },
     personality:
       'Oren, a quiet collector of rare things. Pays well for rare items, but walks away from anyone who bluffs.',

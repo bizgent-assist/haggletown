@@ -31,6 +31,8 @@ export const env = {
     rpcUrl: process.env.NEAR_RPC_URL || 'https://test.rpc.fastnear.com',
     explorerUrl: process.env.NEAR_EXPLORER_URL || 'https://testnet.nearblocks.io',
     marketContractId: process.env.MARKET_CONTRACT_ID || '',
+    operatorAccountId: process.env.OPERATOR_ACCOUNT_ID || '',
+    npcKeys: JSON.parse(process.env.NPC_KEYS || '{}'),
   },
   marketTickSeconds: Number(process.env.MARKET_TICK_SECONDS || 60),
 };
