@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { errorMessage, getNpcs } from '../services/api.js';
+import { errorMessage, getNpcs, nudgeMarket } from '../services/api.js';
 import { formatNear, itemEmoji } from '../utils/format.js';
 import MarketFeed from '../components/MarketFeed.jsx';
 
@@ -10,6 +10,10 @@ export default function Town() {
 
   useEffect(() => {
     getNpcs().then(setNpcs).catch((e) => setError(errorMessage(e)));
+    // Let the market move: the server runs at most one tick every 2 minutes, then we refresh the stalls.
+    nudgeMarket()
+      .then((r) => r.ran && r.deal && getNpcs().then(setNpcs))
+      .catch(() => {});
   }, []);
 
   return (

@@ -11,6 +11,8 @@ export const env = {
   port: Number(process.env.PORT || 4100),
   appName: process.env.APP_NAME || 'Haggletown',
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5174',
+  // Number of proxies in front of the app (Vercel: client rewrite + function edge = 2).
+  trustProxy: Number(process.env.TRUST_PROXY || 1),
   allowedOrigins: (process.env.ALLOWED_ORIGINS || 'http://localhost:5174').split(',').map((s) => s.trim()),
   mongoUri: () => required('MONGODB_URI'),
   jwtSecret: () => required('JWT_SECRET'),

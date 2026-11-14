@@ -13,6 +13,7 @@ export default function Layout() {
           <Link to="/" className="font-bold text-lantern text-lg">Haggletown</Link>
           <NavLink to="/town" className={navClass}>Town</NavLink>
           <NavLink to="/ledger" className={navClass}>Ledger</NavLink>
+          <NavLink to="/account" className={navClass}>Account</NavLink>
           <span className="ml-auto text-xs rounded bg-white/10 px-2 py-1">TESTNET</span>
           {accountId ? (
             <button type="button" onClick={disconnect} className="text-sm rounded-lg border border-white/20 px-3 py-1.5 hover:border-lantern" title="Disconnect">

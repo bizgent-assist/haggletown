@@ -68,7 +68,12 @@ export const pruneExpiredAsNpc = (slug, limit = 25) => npcCall(slug, 'prune_expi
  * and returns the trade from its `haggletown` trade event.
  */
 export async function verifyAcceptTx(txHash, accountId) {
-  const result = await rpc('tx', { tx_hash: txHash, sender_account_id: accountId, wait_until: 'EXECUTED_OPTIMISTIC' });
+  let result;
+  try {
+    result = await rpc('tx', { tx_hash: txHash, sender_account_id: accountId, wait_until: 'EXECUTED_OPTIMISTIC' });
+  } catch (err) {
+    throw Object.assign(new Error(`Transaction not found for ${accountId} (${err.message})`), { status: 400 });
+  }
   const { transaction } = result;
   const call = transaction.actions?.[0]?.FunctionCall;
   if (transaction.signer_id !== accountId) throw Object.assign(new Error('Signer mismatch'), { status: 400 });

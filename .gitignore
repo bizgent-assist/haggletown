@@ -42,3 +42,6 @@ wallet.json
 # NEAR account key files
 *.testnet.json
 *.near.json
+
+# Vercel
+.vercel

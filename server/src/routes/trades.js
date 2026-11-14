@@ -3,21 +3,24 @@ import Joi from 'joi';
 import { Trade } from '../models/Trade.js';
 import { Conversation } from '../models/Conversation.js';
 import { verifyAcceptTx } from '../services/near.js';
-import { validate, nearAccountId } from '../middleware/validate.js';
+import { validate } from '../middleware/validate.js';
+import { requireAuth } from '../middleware/auth.js';
+import { sendTradeReceipt } from '../services/receipts.js';
 
 export const tradesRouter = Router();
 
 /** The client reports a signed accept_offer; the server verifies it on-chain before recording it. */
 tradesRouter.post(
   '/confirm',
+  requireAuth,
   validate({
     body: Joi.object({
-      accountId: nearAccountId.required(),
       txHash: Joi.string().pattern(/^[1-9A-HJ-NP-Za-km-z]{43,44}$/).required(),
     }),
   }),
   async (req, res) => {
-    const { accountId, txHash } = req.body;
+    const { txHash } = req.body;
+    const accountId = req.player;
     const existing = await Trade.findOne({ txHash }).lean();
     if (existing) return res.json({ trade: existing });
 
@@ -37,6 +40,7 @@ tradesRouter.post(
       { player: accountId, 'messages.offer.offerId': event.offer_id },
       { $set: { 'messages.$.offer.status': 'accepted' } },
     );
+    await sendTradeReceipt(accountId, trade);
     res.status(201).json({ trade });
   },
 );

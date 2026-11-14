@@ -8,7 +8,7 @@ import { formatNear, itemEmoji } from '../utils/format.js';
 
 export default function Merchant() {
   const { slug } = useParams();
-  const { accountId, connect, callMarket } = useWallet();
+  const { accountId, signedIn, connect, signIn, callMarket } = useWallet();
   const [npc, setNpc] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inventory, setInventory] = useState({});
@@ -26,9 +26,9 @@ export default function Merchant() {
 
   useEffect(() => {
     refresh().catch((e) => setError(errorMessage(e)));
-    if (accountId) getConversation(slug, accountId).then(setMessages).catch(() => {});
+    if (signedIn) getConversation(slug).then(setMessages).catch(() => {});
     else setMessages([]);
-  }, [slug, accountId, refresh]);
+  }, [slug, signedIn, refresh]);
 
   useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
 
@@ -41,7 +41,7 @@ export default function Merchant() {
     setSending(true);
     setMessages((m) => [...m, { role: 'player', text }]);
     try {
-      const { reply, npc: updated } = await haggle(slug, accountId, text);
+      const { reply, npc: updated } = await haggle(slug, text);
       setMessages((m) => [...m, reply]);
       setNpc(updated);
     } catch (err) {
@@ -57,7 +57,7 @@ export default function Merchant() {
     try {
       const deposit = offer.side === 'NpcSells' ? (BigInt(offer.unitPrice) * BigInt(offer.quantity)).toString() : '0';
       const txHash = await callMarket({ methodName: 'accept_offer', args: { offer_id: offer.offerId }, deposit });
-      await confirmTrade(accountId, txHash);
+      await confirmTrade(txHash);
       setMessages((m) => m.map((msg) => (msg.offer?.offerId === offer.offerId ? { ...msg, offer: { ...msg.offer, status: 'accepted' } } : msg)));
       await refresh();
     } catch (err) {
@@ -81,7 +81,7 @@ export default function Merchant() {
           <div className="flex-1 space-y-3 overflow-y-auto p-4">
             {messages.length === 0 && (
               <p className="text-sm text-parchment/50">
-                {accountId ? `Say hello to ${npc.name}, ask about prices, and start haggling.` : 'Connect your wallet to talk to the merchant.'}
+                {signedIn ? `Say hello to ${npc.name}, ask about prices, and start haggling.` : accountId ? 'Sign in with your wallet (a free signature, no transaction) to talk to the merchant.' : 'Connect your wallet to talk to the merchant.'}
               </p>
             )}
             {messages.map((m, i) => (
@@ -99,7 +99,7 @@ export default function Merchant() {
             {sending && <p className="text-sm text-parchment/50">{npc.name} is thinking…</p>}
             <div ref={bottomRef} />
           </div>
-          {accountId ? (
+          {signedIn ? (
             <form onSubmit={send} className="flex gap-2 border-t border-white/10 p-3">
               <input
                 value={draft}
@@ -114,7 +114,11 @@ export default function Merchant() {
             </form>
           ) : (
             <div className="border-t border-white/10 p-3 text-center">
-              <button type="button" onClick={connect} className="rounded-lg bg-lantern px-4 py-2 text-sm font-semibold text-dusk">Connect wallet to haggle</button>
+              {accountId ? (
+                <button type="button" onClick={() => signIn().catch((e) => setError(errorMessage(e)))} className="rounded-lg bg-lantern px-4 py-2 text-sm font-semibold text-dusk">Sign in to haggle</button>
+              ) : (
+                <button type="button" onClick={() => connect().catch((e) => setError(errorMessage(e)))} className="rounded-lg bg-lantern px-4 py-2 text-sm font-semibold text-dusk">Connect wallet to haggle</button>
+              )}
             </div>
           )}
         </div>

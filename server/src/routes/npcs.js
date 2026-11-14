@@ -5,7 +5,8 @@ import { NPCS } from '../config/world.js';
 import { Conversation } from '../models/Conversation.js';
 import { findNpc, inventoryOf, publicStall, stallOf } from '../services/market.js';
 import { haggleTurn } from '../services/haggle.js';
-import { validate, nearAccountId } from '../middleware/validate.js';
+import { validate } from '../middleware/validate.js';
+import { requireAuth } from '../middleware/auth.js';
 
 export const npcsRouter = Router();
 const MAX_MESSAGES = 60;
@@ -28,25 +29,27 @@ npcsRouter.get('/:slug', requireNpc, async (req, res) => {
 
 npcsRouter.get(
   '/:slug/conversation',
+  requireAuth,
   requireNpc,
-  validate({ query: Joi.object({ accountId: nearAccountId.required() }) }),
   async (req, res) => {
-    const convo = await Conversation.findOne({ player: req.query.accountId, npcSlug: req.npc.slug }).lean();
+    const convo = await Conversation.findOne({ player: req.player, npcSlug: req.npc.slug }).lean();
     res.json({ messages: expireOffers(convo?.messages ?? []) });
   },
 );
 
-const haggleLimiter = rateLimit({ windowMs: 60_000, limit: 15, message: { error: 'Slow down — the merchant needs a breath.' } });
+const haggleLimiter = rateLimit({ windowMs: 60_000, limit: 15, keyGenerator: (req) => req.player, message: { error: 'Slow down — the merchant needs a breath.' } });
 
 npcsRouter.post(
   '/:slug/haggle',
+  requireAuth,
   haggleLimiter,
   requireNpc,
   validate({
-    body: Joi.object({ accountId: nearAccountId.required(), message: Joi.string().trim().min(1).max(400).required() }),
+    body: Joi.object({ message: Joi.string().trim().min(1).max(400).required() }),
   }),
   async (req, res) => {
-    const { accountId, message } = req.body;
+    const { message } = req.body;
+    const accountId = req.player;
     const [stall, playerStock] = await Promise.all([stallOf(req.npc), inventoryOf(accountId)]);
     if (!stall.active) return res.status(409).json({ error: `${req.npc.name}'s stall is closed.` });
 
